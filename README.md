@@ -9,7 +9,7 @@
 - OpenCV
 
 # How to install dependencies on the Jetson Nano:
-**1. Tensorflow**
+**1. Tensorflow**  
 Tensorflow was installed using [Nvidia's guide](https://docs.nvidia.com/deeplearning/frameworks/install-tf-jetson-platform/index.html)
 
 Download Tensorflow's dependencies:  
@@ -26,15 +26,15 @@ Install verified working versions of dependencies:
 Install Tensorflow:  
 `$ sudo pip3 install --pre --extra-index-url https://developer.download.nvidia.com/compute/redist/jp/v44 tensorflow`
 
-**2. NetworkTables**
+**2. NetworkTables**  
 Install [pynetworktables](https://github.com/robotpy/robotpy-docs/blob/55e7ab2427824d4c8af3740c3a178e373e4f6ede/install/pynetworktables.rst) using pip:  
 `$ pip3 install pynetworktables`
 
 
-**3. CUDA 10.2 (arm64)**
+**3. CUDA 10.2 (arm64)**  
 Option 1: Download from [Nvidia](https://developer.nvidia.com/cuda-toolkit/arm) (use Toolkit for Ubuntu 18.04 LTS)  
 Option 2: Download [deb package](https://1drv.ms/u/s!AlG0FKaSj9fegbJpzJOs8CaZJK6fKA?e=EquCLp) and install using Ubuntu Software Center or Synaptics
 
-**4. OpenCV**
+**4. OpenCV**  
 Install [OpenCV](https://github.com/opencv/opencv) using pip:  
 `$ pip3 install opencv-python`
