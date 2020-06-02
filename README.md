@@ -1,4 +1,5 @@
-# On the Jetson Nano, place the files in the following path:
+# On the Jetson Nano, place the files in the following path:  
+**Note:** a `models` folder is also required. It can be downloaded [here](https://1drv.ms/u/s!AlG0FKaSj9fe3Eau4bCdaAzXpJZI?e=hp4BPO). It should also be placed in this path.  
 `/home/dlinano/nvdli-nano/`
 
 # Dependencies:
