@@ -26,9 +26,9 @@ from utils import label_map_util
 from utils import visualization_utils as vis_util
 
 # network tables for robot comms
-import ntclient
+import networktablesclient as nt
+commClient = nt.NetworkTablesClient()
 import cameraOffsetToAngle
-commClient = ntclient.netcli
   
 # Frozen detection graph is used as model
 PATH_TO_CKPT = "/home/dlinano/nvdli-nano/models/powercell_graph/frozen_inference_graph.pb"
