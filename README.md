@@ -36,5 +36,6 @@ Option 1: Download from [Nvidia](https://developer.nvidia.com/cuda-toolkit/arm) 
 Option 2: Download [deb package](https://1drv.ms/u/s!AlG0FKaSj9fegbJpzJOs8CaZJK6fKA?e=EquCLp) and install using Ubuntu Software Center or Synaptics
 
 **4. OpenCV**  
-Install [OpenCV](https://github.com/opencv/opencv) using pip:  
-`$ pip3 install opencv-python`
+Install [OpenCV](https://github.com/opencv/opencv) using pip or apt:  
+`$ pip3 install opencv-python`  
+`$ sudo apt-get install python3-opencv`
