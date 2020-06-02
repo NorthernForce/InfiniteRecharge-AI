@@ -109,14 +109,27 @@ class BoxCentralCoordsGenerator:
         return (x, y)
 
     def __getCentermostBoxCoords(self, boxCenters):
-        offsets = []
+        x_offsets = []
+        y_offsets = []
+        closestTarget = None
         for point in boxCenters:
             offsetX, offsetY = cameraOffsetToAngle.FromPixels(point[0], point[1])
-            offsets.append(abs(offsetX))
-        smallestOffsetIndex = offsets.index(min(offsets))
-        return boxCenters[smallestOffsetIndex]
-                
+            # x_offsets is always positive because we want it to be close to the center (0)
+            x_offsets.append(abs(offsetX))
+            # y_offsets can be negative because smaller numbers = a closer target
+            y_offsets.append(offsetY)
+        x_smallestOffsetIndex = x_offsets.index(min(x_offsets))
+        y_smallestOffsetIndex = y_offsets.index(min(y_offsets))
+        
+        # find closest powercell to robot
+        if (y_smallestOffsetIndex < 5) and (x_smallestOffsetIndex < 15):
+          closestTarget = y_smallestOffsetIndex
+        else:
+          closestTarget = x_smallestOffsetIndex
+     
+        return boxCenters[closestTarget]   
 
+    
 with detectionGraph.as_default():
     with tf.Session(graph=detectionGraph) as sess:
         while True:
