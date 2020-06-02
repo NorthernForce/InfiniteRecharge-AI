@@ -2,6 +2,12 @@ import sys, time, logging
 from networktables import NetworkTables
 
 class NetworkTablesClient:
+    def __init__(self):
+        self.ConnectToServerWithChecks()
+        sdtable = self.GetTableFromServer()
+        self.SetLocalTable(sdtable)
+        self.SendValuePair("PC Offset in AI Cam:", 9999)
+
     def SendValuePair(self, key, value):
         self.localTable.putNumber(key, value)
 
@@ -32,11 +38,3 @@ class NetworkTablesClient:
     
     localTable = GetTableFromServer("SmartDashboard")
     robotIP = "10.1.72.2"
-
-
-netcli = NetworkTablesClient()
-netcli.ConnectToServerWithChecks()
-sdtable = netcli.GetTableFromServer()
-netcli.SetLocalTable(sdtable)
-
-netcli.SendValuePair("PC Offset in AI Cam:", -999)
