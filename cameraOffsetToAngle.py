@@ -1,40 +1,46 @@
 FOV = 60
 FOVoffset = FOV/2
 
+width = 400
+height = 300
+
+width_thresh = (width/2)+1
+height_thresh = (height/2)+1
+
 def FromPixels(x, y):
-    max = 112/FOVoffset
+    max = (width/2)/FOVoffset
     angleX = 0
     angleY = 0
 
-    # -1 is a placeholder for no offset given
-    if (x == -1) and (y == -1):
+    # 9999 is a placeholder for no offset given
+    if (x == 9999) and (y == 9999):
         angleX = 0
         angleY = 0
 
-    elif (x < 113) and (y < 113):
+    elif (x < width_thresh) and (y < height_thresh):
         offsetX = -x
         offsetY = -y
 
         angleX = -FOVoffset + -(offsetX/max)
         angleY = -FOVoffset + -(offsetY/max)
 
-    elif (x < 113) and (y >= 113):
+    elif (x < width_thresh) and (y >= height_thresh):
         offsetX = -x
-        offsetY = y-112
+        offsetY = y-(height/2)
         
         angleX = -FOVoffset + -(offsetX/max)
         angleY = offsetY/-max
 
-    elif (x >= 113) and (y < 113):
-        offsetX = x-112
+    elif (x >= width_thresh) and (y < height_thresh):
+        offsetX = x-(width/2)
         offsetY = -y
         
         angleX = offsetX/max
         angleY = -FOVoffset + -(offsetY/max)
 
-    elif (x >= 113) and (y >= 113):
-        offsetX = x-112
-        offsetY = y-112
+    elif (x >= (width/2)+1) and (y >= height_thresh):
+        offsetX = x-(width/2)
+        offsetY = y-(height/2)
 
         angleX = offsetX/max
         angleY = offsetY/-max
