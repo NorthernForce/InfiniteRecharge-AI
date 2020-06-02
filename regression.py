@@ -112,7 +112,7 @@ class BoxCentralCoordsGenerator:
         offsets = []
         for point in boxCenters:
             offsetX, offsetY = cameraOffsetToAngle.FromPixels(point[0], point[1])
-            offsets.append(offsetX)
+            offsets.append(abs(offsetX))
         smallestOffsetIndex = offsets.index(min(offsets))
         return boxCenters[smallestOffsetIndex]
                 
