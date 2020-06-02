@@ -31,7 +31,7 @@ Install [pynetworktables](https://github.com/robotpy/robotpy-docs/blob/55e7ab242
 
 
 # 3. CUDA 10.2 (arm64)
-Option 1: Download from [Nvidia](https://developer.nvidia.com/cuda-toolkit/arm) (use Toolkit for Ubuntu 18.04 LTS)
+Option 1: Download from [Nvidia](https://developer.nvidia.com/cuda-toolkit/arm) (use Toolkit for Ubuntu 18.04 LTS)  
 Option 2: Download [deb package](https://1drv.ms/u/s!AlG0FKaSj9fegbJpzJOs8CaZJK6fKA?e=EquCLp) and install using Ubuntu Software Center or Synaptics
 
 # 4. OpenCV
