@@ -6,6 +6,11 @@ sys.path.append("/home/dlinano/nvdli-nano/models/research/")
 import numpy as np
 from PIL import Image
 
+# prevent annoying info thrown from PIL
+import logging
+pil_logger = logging.getLogger('PIL')
+pil_logger.setLevel(logging.INFO)
+
 # must import opencv before tensorflow to avoid issues, common library problem
 import cv2
 def getCapture(cameraID=0):
@@ -68,17 +73,24 @@ class PointBox:
 class BoxCentralCoordsGenerator:
     def get(self, boxes):
         pts = []
+        boxCenters = []
+        print(len(boxes))
         for boxListIndexer in range(len(boxes)):
             score = np.squeeze(scores)
             if score[boxListIndexer] > MIN_SCORE_THRESH:
                 box = np.squeeze(boxes)
+                # there are 4 points in each square
                 for boxNum in range(4):
                     scaledCoord = self.__scaleCoordsToFrameSize(box, boxNum, boxListIndexer)
                     pts.append(scaledCoord)
                 trackingBox = PointBox(pts)
-                return self.__getTrueBoxCenter(trackingBox)
+                center = self.__getTrueBoxCenter(trackingBox)
+                boxCenters.append(center)
             else:
-                return (-1, -1)
+                # cannot be negative due to target finding algorithm
+                noOffset = (9999, 9999)
+                boxCenters.append(noOffset)
+        return self.__getCentermostBoxCoords(boxCenters)
 
     def __scaleCoordsToFrameSize(self, box, boxNum, indexer):
         multiplier = None
@@ -95,6 +107,15 @@ class BoxCentralCoordsGenerator:
         x = (x_min + x_max) / 2
         y = (y_min + y_max) / 2
         return (x, y)
+
+    def __getCentermostBoxCoords(self, boxCenters):
+        offsets = []
+        for point in boxCenters:
+            offsetX, offsetY = cameraOffsetToAngle.FromPixels(point[0], point[1])
+            offsets.append(offsetX)
+        smallestOffsetIndex = offsets.index(min(offsets))
+        return boxCenters[smallestOffsetIndex]
+                
 
 with detectionGraph.as_default():
     with tf.Session(graph=detectionGraph) as sess:
