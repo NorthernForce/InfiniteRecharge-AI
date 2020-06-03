@@ -5,12 +5,17 @@
 # Dependencies:
 - Tensorflow
 - pynetworktables
-- CUDA 10.2
-- OpenCV
+- OpenCV (pre-installed)
+- matplotlib
+- Pillow (PIL)
+
+**A partially automated version of dependencies installation is available as a shell script:**  
+[auto installer](https://1drv.ms/u/s!AlG0FKaSj9fegbJvXlqB30WBOcnAtA?e=9u6APm)  
+This will install all dependencies mentioned. Pillow should be installed manually and OpenCV should be checked manually.  
 
 # How to install dependencies on the Jetson Nano:
 **1. Tensorflow**  
-Tensorflow was installed using [Nvidia's guide](https://docs.nvidia.com/deeplearning/frameworks/install-tf-jetson-platform/index.html)
+Below is a summary of [Nvidia's guide](https://docs.nvidia.com/deeplearning/frameworks/install-tf-jetson-platform/index.html), which was used to install Tensorflow
 
 Download Tensorflow's dependencies:  
 `$ sudo apt-get update`  
@@ -30,12 +35,25 @@ Install Tensorflow:
 Install [pynetworktables](https://github.com/robotpy/robotpy-docs/blob/55e7ab2427824d4c8af3740c3a178e373e4f6ede/install/pynetworktables.rst) using pip:  
 `$ pip3 install pynetworktables`
 
+**3. OpenCV**  
+Check and make sure you're on openCV 4.1.1 or higher:  
+`$ python3`  
+`>>> import cv2`  
+`>>> cv2.__version__`  
+expected outputs: `'4.1.1'` or `3.2.0`  
 
-**3. CUDA 10.2 (arm64)**  
-Option 1: Download from [Nvidia](https://developer.nvidia.com/cuda-toolkit/arm) (use Toolkit for Ubuntu 18.04 LTS)  
-Option 2: Download [deb package](https://1drv.ms/u/s!AlG0FKaSj9fegbJpzJOs8CaZJK6fKA?e=EquCLp) and install using Ubuntu Software Center or Synaptics
+if you have 3.2.0, try this:  
+`$ sudo apt-get autoremove python3-opencv`  
+if the above commands doesn't work, try uninstalling all versions of opencv (pip, apt, etc.) and run [this file](https://github.com/AastaNV/JEP/blob/master/script/install_opencv4.1.1_Jetson.sh)
 
-**4. OpenCV**  
-Install [OpenCV](https://github.com/opencv/opencv) using pip or apt:  
-`$ pip3 install opencv-python`  
-`$ sudo apt-get install python3-opencv`
+**4. matplotlib**  
+`$ sudo apt-get install --upgrade python3-matplotlib`  
+
+**5. Pillow (PIL)**  
+Make sure all versions of Pillow are uninstalled  
+`$ sudo apt-get autoremove python3-pil`  
+`$ pip3 uninstall Pillow`  
+
+then install the latest version using one of the two commands (either should work the same way):  
+`$ sudo apt-get install python3-pil` **or** *(NOT BOTH)*  
+`$ pip3 install Pillow`  
