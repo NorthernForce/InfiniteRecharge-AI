@@ -160,7 +160,7 @@ with detectionGraph.as_default():
                 use_normalized_coordinates=True,
                 line_thickness=8,
                 min_score_thresh=MIN_SCORE_THRESH)
-            cv2.imshow("object detection", cv2.resize(image_np, (CAP_HEIGHT,CAP_WIDTH)))
+            # cv2.imshow("object detection", cv2.resize(image_np, (CAP_HEIGHT,CAP_WIDTH)))
 
             # if 'q' key is pressed, end program - designed for GUI
             if cv2.waitKey(25) & 0xFF == ord('q'):
@@ -171,8 +171,10 @@ with detectionGraph.as_default():
             coords = BoxCentralCoordsGenerator()
             x_offset, y_offset = coords.get(boxes)
             x_offset_ang, y_offset_ang = cameraOffsetToAngle.FromPixels(x_offset, y_offset)
+            
+            Offsets = [x_offset_ang, y_offset_ang]
 
             # send camera offset angle to robot - angle=0 if no valid targets
-            commClient.SendValuePair("PC Offset in AI Cam: ", x_offset_ang)
+            commClient.SendValueArray("PC Offset in AI Cam: ", Offsets)
             print("({}, {})".format(x_offset, y_offset))
             print("Angle Offset (X) in Cam: {}".format(x_offset_ang))
