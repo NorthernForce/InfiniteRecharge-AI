@@ -173,6 +173,12 @@ with detectionGraph.as_default():
             x_offset_ang, y_offset_ang = cameraOffsetToAngle.FromPixels(x_offset, y_offset)
             
             Offsets = [x_offset_ang, y_offset_ang]
+            
+            # send whether there are valid targets to robot
+            if Offsets[0] or Offsets[1] != 0:
+              commClient.SendValuePair("valid target:", 1)
+            else:
+              commClient.SendValuePair("valid target:", 0)
 
             # send camera offset angle to robot - angle=0 if no valid targets
             commClient.SendValueArray("PC Offset in AI Cam: ", Offsets)
