@@ -3,6 +3,7 @@
 `/home/dlinano/nvdli-nano/`
 
 # Dependencies:
+- Python 3 - Tested working with 3.6 and 3.7. It will NOT work with 3.8.
 - Tensorflow
 - pynetworktables
 - OpenCV (pre-installed)
