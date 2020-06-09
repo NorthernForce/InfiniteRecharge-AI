@@ -21,7 +21,7 @@ cap = getCapture()
 CAP_HEIGHT = 400
 CAP_WIDTH = 300
 
-import tensorflow as tf
+import tensorflow.compat.v1 as tf
 from utils import label_map_util
 from utils import visualization_utils as vis_util
 
@@ -29,6 +29,19 @@ from utils import visualization_utils as vis_util
 import networktablesclient as nt
 commClient = nt.NetworkTablesClient()
 import cameraOffsetToAngle
+
+# setup HTTP mjpeg server for live viewing of image detections
+from threading import Thread
+from time import sleep
+import mjpegserver
+img_to_server = None
+
+def startImageServer():
+    mjpegserver.start()
+    while True:
+        mjpegserver.stream.update(img_to_server)
+        sleep(0.1)
+Thread(target=startImageServer, args=()).start()
   
 # Frozen detection graph is used as model
 PATH_TO_CKPT = "/home/dlinano/nvdli-nano/models/powercell_graph/frozen_inference_graph.pb"
@@ -59,7 +72,7 @@ categories = label_map_util.convert_label_map_to_categories(label_map, max_num_c
 category_index = label_map_util.create_category_index(categories)
 
 # create a new box from a list of 4 points
-class PointBox:
+class PointBox:                                                                                                                                   
     def __init__(self, pts):
         self.x_min = pts[1]
         self.y_min = pts[0]
@@ -74,7 +87,6 @@ class BoxCentralCoordsGenerator:
     def get(self, boxes):
         pts = []
         boxCenters = []
-        print(len(boxes))
         for boxListIndexer in range(len(boxes)):
             score = np.squeeze(scores)
             if score[boxListIndexer] > MIN_SCORE_THRESH:
@@ -150,7 +162,7 @@ with detectionGraph.as_default():
                 [boxes, scores, classes, num_detections],
                 feed_dict={image_tensor: numpyImg})
 
-            # show results of detection in new window - designed for GUI
+            # show results
             vis_util.visualize_boxes_and_labels_on_image_array(
                 image_np,
                 np.squeeze(boxes),
@@ -160,13 +172,11 @@ with detectionGraph.as_default():
                 use_normalized_coordinates=True,
                 line_thickness=8,
                 min_score_thresh=MIN_SCORE_THRESH)
-            # cv2.imshow("object detection", cv2.resize(image_np, (CAP_HEIGHT,CAP_WIDTH)))
-
-            # if 'q' key is pressed, end program - designed for GUI
-            if cv2.waitKey(25) & 0xFF == ord('q'):
-                cv2.destroyAllWindows()
-                break
-
+            # cv2.imshow("detection feed", cv2.resize(image_np, (CAP_HEIGHT, CAP_WIDTH)))
+            # streamUpdateThread = Thread(target=updateStream, args=(image_np,))
+            # streamUpdateThread.start()
+            img_to_server = image_np
+                            
             # get (x, y) from center of detected targets
             coords = BoxCentralCoordsGenerator()
             x_offset, y_offset = coords.get(boxes)
