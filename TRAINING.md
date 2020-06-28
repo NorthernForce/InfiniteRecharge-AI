@@ -1,6 +1,6 @@
 # Training tfRecords:
-**Note:** training should be done on a computer with reasonably powerful GPUs. Images should be limited in size (800x600 or so) to avoid maxing out the Jetson's RAM.  
-Limit images to 4000x3000 on a computer with 16GB of RAM for successful training. Close all other background tasks.  
+**Note:** training should be done on a computer with reasonably powerful GPU(s). Images should be limited in size (400x300 or so) to avoid maxing out the Jetson's RAM.  
+Limit images to 2000x1500 or less on a computer with 16GB of RAM for stable training. Close all other background tasks.  
 `$ cd /home/dlinano/nvdli-nano/models/resources`  
 `$ python3 xml_to_csv.py`  
 
