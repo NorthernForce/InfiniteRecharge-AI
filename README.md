@@ -1,5 +1,5 @@
 # On the Jetson Nano, place the files in the following path:  
-**Note:** a `models` folder is also required. It can be downloaded [here](https://1drv.ms/u/s!AlG0FKaSj9fegbMK0vMFMjWB9uLZfw?e=9X4zr6). It should also be placed in this path.  
+**Note:** a `models` folder is also required. It can be downloaded [here](https://1drv.ms/u/s!AlG0FKaSj9fegYdaoUvxQN-nhyAfDQ?e=W0CjJw). It should also be placed in this path.  
 `/home/dlinano/nvdli-nano/`
 
 # Dependencies:
@@ -41,11 +41,11 @@ Check and make sure you're on openCV 4.1.1 or higher:
 `$ python3`  
 `>>> import cv2`  
 `>>> cv2.__version__`  
-expected outputs: `'4.1.1'` or `3.2.0`  
+expected default outputs: `'4.1.1'` or `'3.2.0'`  
 
 if you have 3.2.0, try this:  
 `$ sudo apt-get autoremove python3-opencv`  
-if the above commands doesn't work, try uninstalling all versions of opencv (pip, apt, etc.) and run [this file](https://github.com/AastaNV/JEP/blob/master/script/install_opencv4.1.1_Jetson.sh)
+if the above commands doesn't work, try uninstalling all versions of opencv (pip, apt, etc.) and run [this file](https://github.com/milq/milq/blob/master/scripts/bash/install-opencv.sh)
 
 **4. matplotlib**  
 `$ sudo apt-get install --upgrade python3-matplotlib`  
@@ -56,5 +56,5 @@ Make sure all versions of Pillow are uninstalled
 `$ pip3 uninstall Pillow`  
 
 then install the latest version using one of the two commands (either should work the same way):  
-`$ sudo apt-get install python3-pil` **or** *(NOT BOTH)*  
+`$ sudo apt-get install python3-pil` **or** *(not both)*  
 `$ pip3 install Pillow`  
