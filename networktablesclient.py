@@ -38,3 +38,5 @@ class NetworkTablesClient:
     
     localTable = GetTableFromServer("SmartDashboard")
     robotIP = "10.1.72.2"
+
+commClient = NetworkTablesClient()
