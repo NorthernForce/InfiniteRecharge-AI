@@ -5,6 +5,7 @@ from os import popen
 import re
 import cv2, imutils
 from time import sleep
+import zlib
 
 stream = None
 
@@ -28,8 +29,9 @@ class StreamHandler(BaseHTTPRequestHandler):
         except Exception as e:
             raise e
 
-    def _writeFrame(self, frame):
-        retval, memBuffer = cv2.imencode(".jpg", frame)
+    def _writeFrame(self, frame, quality=50):
+        encode_param = [int(cv2.IMWRITE_JPEG_QUALITY), quality]
+        retval, memBuffer = cv2.imencode(".jpg", frame, encode_param)
         self.wfile.write('--jpgboundary\r\n'.encode())
         self.end_headers()
         self.wfile.write(bytearray(memBuffer))
