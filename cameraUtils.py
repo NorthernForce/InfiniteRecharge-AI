@@ -32,4 +32,10 @@ def updateFeedToDesiredCamera():
         CAM_ID = desiredCamID
     isChangingCamera = False
 
+def increaseYellow(image_np):
+    hsv = cv2.cvtColor(image_np, cv2.COLOR_BGR2HSV)
+    yellowMask = cv2.inRange(hsv, (51, 40, 70), (60, 100, 100))
+    image_np[yellowMask == 255] = (0, 255, 0)
+    return image_np
+
 switchCamera(CAM_ID)

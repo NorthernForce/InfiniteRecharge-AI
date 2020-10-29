@@ -29,6 +29,7 @@ from time import sleep
 import mjpegserver
 
 img_to_server = None
+server_update_interval = 0.1
 
 import coordUtils
 
@@ -36,7 +37,7 @@ def startImageServer():
     mjpegserver.start()
     while True:
         mjpegserver.stream.update(img_to_server)
-        sleep(0.1)
+        sleep(server_update_interval)
 Thread(target=startImageServer, args=()).start()
   
 # Frozen detection graph is used as model
@@ -73,6 +74,8 @@ category_index = label_map_util.create_category_index(categories)
 
 def RunAI(image_np):
     global img_to_server
+    global server_update_interval
+    server_update_interval = 0.1
 
     # model expects images to be in this format: [1, None, None, 3]
     numpyImg = np.expand_dims(image_np, axis=0)
@@ -131,13 +134,14 @@ with detectionGraph.as_default():
     with tf.Session(graph=detectionGraph) as sess:
         while True:
             ret, image_np = cameraUtils.cap.read()
-
+            
             if (cameraUtils.CAM_ID == 1):
-                #adjust saturation, particularly for yellows only
-                hsv = cv2.cvtColor(image_np, cv2.COLOR_BGR2HSV)
-                yellowMask = cv2.inRange(hsv, (51, 40, 70), (60, 100, 100))
-                image_np[yellowMask == 255] = (0, 255, 0)
+                image_np = cameraUtils.increaseYellow(image_np)
 
             if ((not cameraUtils.isChangingCamera) and ret):
-                RunAI(image_np)
+                if (commClient.GetValueFrom("manualcam") == 1):
+                    img_to_server = image_np
+                    server_update_interval = 0.03
+                else:
+                    RunAI(image_np)
             cameraUtils.updateFeedToDesiredCamera()
