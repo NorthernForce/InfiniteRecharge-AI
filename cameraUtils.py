@@ -1,5 +1,6 @@
 import cv2
 import networktablesclient as nt
+import numpy as np
 commClient = nt.commClient
 
 # sets tracking resolution
@@ -30,12 +31,6 @@ def updateFeedToDesiredCamera():
         elif (desiredCamID == 1):
             switchCamera(1)
         CAM_ID = desiredCamID
-    isChangingCamera = False
-
-def increaseYellow(image_np):
-    hsv = cv2.cvtColor(image_np, cv2.COLOR_BGR2HSV)
-    yellowMask = cv2.inRange(hsv, (51, 40, 70), (60, 100, 100))
-    image_np[yellowMask == 255] = (0, 255, 0)
-    return image_np
+    isChangingCamera = False    
 
 switchCamera(CAM_ID)
