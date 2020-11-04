@@ -20,7 +20,7 @@ class BoxCentralCoordsGenerator:
                     pts.append(scaledCoord)
                 trackingBox = PointBox(pts)
                 self.targetBoxArea = trackingBox.getArea()
-                center = self.__getAbsoluteBoxCenter(trackingBox)
+                center = trackingBox.getAbsoluteBoxCenter()
                 boxCenters.append(center)
             else:
                 # default coords cannot be negative or None due to target finding algorithm
@@ -39,13 +39,6 @@ class BoxCentralCoordsGenerator:
 
     def getCoordsArea(self):
         return self.targetBoxArea
-
-    # returns the center of the box as coordinates on the entire plane
-    def __getAbsoluteBoxCenter(self, boxPts):
-        x_min, y_min, x_max, y_max = boxPts.getPts()
-        x = (x_min + x_max) / 2
-        y = (y_min + y_max) / 2
-        return (x, y)
 
     def __getCentermostBoxCoords(self, boxCenters):
         x_offsets = []
@@ -80,6 +73,11 @@ class PointBox:
         x_len = self.x_max - self.x_min
         y_len = self.y_max - self.y_min
         return (x_len * y_len)
+
+    def getAbsoluteBoxCenter(self):
+        x = (self.x_min + self.x_max) / 2
+        y = (self.y_min + self.y_max) / 2
+        return (x, y)
 
     def getPts(self):
         return self.x_min, self.y_min, self.x_max, self.y_max

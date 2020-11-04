@@ -125,11 +125,6 @@ def RunAI(image_np):
 
     commClient.SendValuePair("target area", coords.targetBoxArea)
 
-    if (cameraUtils.CAM_ID != 0):
-        commClient.SendValuePair("AI: IntakeOffsetX", x_offset)
-    else:
-        commClient.SendValuePair("AI: IntakeOffsetX", 9999)
-
 with detectionGraph.as_default():
     with tf.Session(graph=detectionGraph) as sess:
         while True:
@@ -141,7 +136,11 @@ with detectionGraph.as_default():
                     server_update_interval = 0.03
 
                 if (cameraUtils.CAM_ID == 1):
-                    cvVision.getCentralCoordsOfYellowFromImage(image_np)
+                    img_to_server = image_np
+                    x_offset, y_offset = cvVision.getCentralCoordsOfYellowFromImage(image_np)
+                    if (x_offset is not None):
+                        commClient.SendValuePair("AI: IntakeOffsetX", x_offset)
                 else:
+                    commClient.SendValuePair("AI: IntakeOffsetX", 9999)
                     RunAI(image_np)
             cameraUtils.updateFeedToDesiredCamera()
