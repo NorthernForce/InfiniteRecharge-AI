@@ -63,14 +63,13 @@ def _removeOutlyingBoxes(boxes):
 	for box in boxes:
 		avgDistsForBoxes.append(box.avgOfDistances)
 	avgDistBetweenAllBoxes = sum(avgDistsForBoxes) / len(avgDistsForBoxes)
-	print("{} / {}".format(sum(avgDistsForBoxes), len(avgDistsForBoxes)))
 
 	for i in range(len(boxes)):
 		areaBias = 1 / (1+boxes[i].ratio_of_image)
 		if (avgDistsForBoxes[i] * areaBias) > avgDistBetweenAllBoxes:
 			boxesToRemove.append(i)
 	for index in boxesToRemove:
-		boxes.remove(index)
+		boxes.pop(index)
 
 	return boxes
 
@@ -118,5 +117,5 @@ def getCentralCoordsOfYellowFromImage(image_np):
 
 	calculateDistanceOfEachBoxToAllOthers(detectionBoxes)
 	clusterBox = getClusterBoxFromCloseBoxes(detectionBoxes)
-	cv2.rectangle(image_np, (x_min, y_min), (x_max, y_max), (11, 252, 0), 2)
+	cv2.rectangle(image_np, (clusterBox.x_min, clusterBox.y_min), (clusterBox.x_max, clusterBox.y_max), (11, 252, 0), 2)
 	return clusterBox.getAbsoluteBoxCenter()
