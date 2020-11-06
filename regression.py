@@ -12,7 +12,7 @@ pil_logger = logging.getLogger('PIL')
 pil_logger.setLevel(logging.INFO)
 
 # must import camera libraries (opencv) before tensorflow to avoid issues, common library problem
-import cameraUtils, cv2
+import cameraUtils, cv2, cvVision
 
 import tensorflow.compat.v1 as tf
 from utils import label_map_util
@@ -125,23 +125,22 @@ def RunAI(image_np):
 
     commClient.SendValuePair("target area", coords.targetBoxArea)
 
-    if (cameraUtils.CAM_ID != 0):
-        commClient.SendValuePair("AI: IntakeOffsetX", x_offset)
-    else:
-        commClient.SendValuePair("AI: IntakeOffsetX", 9999)
-
 with detectionGraph.as_default():
     with tf.Session(graph=detectionGraph) as sess:
         while True:
             ret, image_np = cameraUtils.cap.read()
-            
-            if (cameraUtils.CAM_ID == 1):
-                image_np = cameraUtils.increaseYellow(image_np)
 
             if ((not cameraUtils.isChangingCamera) and ret):
                 if (commClient.GetValueFrom("manualcam") == 1):
                     img_to_server = image_np
                     server_update_interval = 0.03
+
+                if (cameraUtils.CAM_ID == 1):
+                    img_to_server = image_np
+                    x_offset, y_offset = cvVision.getCentralCoordsOfYellowFromImage(image_np)
+                    if (x_offset is not None):
+                        commClient.SendValuePair("AI: IntakeOffsetX", x_offset)
                 else:
+                    commClient.SendValuePair("AI: IntakeOffsetX", 9999)
                     RunAI(image_np)
             cameraUtils.updateFeedToDesiredCamera()
