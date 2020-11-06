@@ -1,6 +1,7 @@
 import cv2, cameraUtils
 import numpy as np
 from math import sqrt
+from more_itertools import sort_together
 
 class CoordinateBox:
 	def __init__(self, mins, maxes):
@@ -39,13 +40,14 @@ class CoordinateBox:
 		width = maxes[0] - mins[0]
 		height = maxes[1] - mins[1]
 		return (width, height)
-###
+
 def _sortBoxesByArea(boxes):
 	ratios = []
 	boxesByArea = []
 	for box in boxes:
 		ratios.append(box.ratio_of_image)
-	boxesByAreaSmToLg = [p for _,p in sorted(zip(ratios, boxes))]
+
+	boxesByAreaSmToLg = sort_together([ratios, boxes])[1]
 
 	boxesByAreaLgToSm = list(reversed(boxesByAreaSmToLg))
 	return boxesByAreaLgToSm
@@ -69,7 +71,10 @@ def _removeOutlyingBoxes(boxes):
 		if (avgDistsForBoxes[i] * areaBias) > avgDistBetweenAllBoxes:
 			boxesToRemove.append(i)
 	for index in boxesToRemove:
-		boxes.pop(index)
+		try:
+			boxes.pop(index)
+		except:
+			pass
 
 	return boxes
 
@@ -96,7 +101,7 @@ kernelClose = np.ones((20,20))
 
 def _createImageMask(image_np, lowerBound=np.array([20, 100, 100]), upperBound=np.array([50, 255, 255])):
 	imgHSV = cv2.cvtColor(image_np, cv2.COLOR_BGR2HSV)
-	imgHSV[...,2] = imgHSV[...,2] * 0.8
+	imgHSV[...,2] = imgHSV[...,2] * 0.9
 	yellow_mask = cv2.inRange(imgHSV, lowerBound, upperBound)
 	maskOpen = cv2.morphologyEx(yellow_mask, cv2.MORPH_OPEN, kernelOpen)
 	maskClose = cv2.morphologyEx(maskOpen, cv2.MORPH_CLOSE, kernelClose)
@@ -107,15 +112,18 @@ def getCentralCoordsOfYellowFromImage(image_np):
 	detectionBoxes = []
 
 	maskedImage = _createImageMask(image_np)
-	contours, height = cv2.findContours(maskedImage, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_NONE)
-	
+	contours, h = cv2.findContours(maskedImage, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_NONE)
+
 	for i in range(len(contours)):
 		x_min, y_min, width, height = cv2.boundingRect(contours[i])
 		cv2.rectangle(image_np, (x_min, y_min), (x_min + width, y_min + height), (230, 11, 0), 2)
 		x_max, y_max = CoordinateBox.getEndCoordsFromStartAndDist((x_min, y_min), (width, height))
 		detectionBoxes.append(CoordinateBox((x_min, y_min), (x_max, y_max)))
 
-	calculateDistanceOfEachBoxToAllOthers(detectionBoxes)
-	clusterBox = getClusterBoxFromCloseBoxes(detectionBoxes)
-	cv2.rectangle(image_np, (clusterBox.x_min, clusterBox.y_min), (clusterBox.x_max, clusterBox.y_max), (11, 252, 0), 2)
-	return clusterBox.getAbsoluteBoxCenter()
+	if not contours:
+		return (9999, 9999)
+	else:
+		calculateDistanceOfEachBoxToAllOthers(detectionBoxes)
+		clusterBox = getClusterBoxFromCloseBoxes(detectionBoxes)
+		cv2.rectangle(image_np, (clusterBox.x_min, clusterBox.y_min), (clusterBox.x_max, clusterBox.y_max), (11, 252, 0), 2)
+		return clusterBox.getAbsoluteBoxCenter()
