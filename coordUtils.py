@@ -13,15 +13,19 @@ class BoxCentralCoordsGenerator:
         for boxListIndexer in range(len(boxes)):
             score = np.squeeze(scores)
             if score[boxListIndexer] > MIN_SCORE_THRESH:
+                if 
                 box = np.squeeze(boxes)
-                # there are 4 points in each square
+                # there are 4 points in each rectangle target
                 for boxNum in range(4):
                     scaledCoord = self.__scaleCoordsToFrameSize(box, boxNum, boxListIndexer)
                     pts.append(scaledCoord)
                 trackingBox = PointBox(pts)
                 self.targetBoxArea = trackingBox.getArea()
-                center = trackingBox.getAbsoluteBoxCenter()
-                boxCenters.append(center)
+
+                # if target box is not too big, use it
+                if (self.targetBoxArea < (0.5*(cameraUtils.CAP_WIDTH * cameraUtils.CAP_HEIGHT))):
+                    center = trackingBox.getAbsoluteBoxCenter()
+                    boxCenters.append(center)
             else:
                 # default coords cannot be negative or None due to target finding algorithm
                 noOffset = (9999, 9999)
