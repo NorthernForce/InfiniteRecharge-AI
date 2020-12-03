@@ -20,8 +20,11 @@ class BoxCentralCoordsGenerator:
                     pts.append(scaledCoord)
                 trackingBox = PointBox(pts)
                 self.targetBoxArea = trackingBox.getArea()
-                if (self.targetBoxArea < (0.5*(cameraUtils.CAP_WIDTH * cameraUtils.CAP_HEIGHT))):
-    
+
+                if (self.targetBoxArea > (0.5*(cameraUtils.CAP_WIDTH * cameraUtils.CAP_HEIGHT))):
+                    noOffset = (9999, 9999)
+                    boxCenters.append(noOffset)
+                else:
                     center = trackingBox.getAbsoluteBoxCenter()
                     boxCenters.append(center)
             else:
