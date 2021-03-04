@@ -1,4 +1,4 @@
-FOV = 60
+FOV = 70
 FOVoffset = FOV/2
 
 width = 400
