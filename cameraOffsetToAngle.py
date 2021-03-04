@@ -1,8 +1,10 @@
+import realsenseUtils
+
 FOV = 70
 FOVoffset = FOV/2
 
-width = 400
-height = 300
+width = realsenseUtils.RGB_CAP_WIDTH
+height = realsenseUtils.RGB_CAP_HEIGHT
 
 width_thresh = (width/2)+1
 height_thresh = (height/2)+1

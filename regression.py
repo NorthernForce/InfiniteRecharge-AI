@@ -107,6 +107,7 @@ def RunAI(image_np):
     # get (x, y) from center of detected targets
     coords = coordUtils.BoxCentralCoordsGenerator()
     x_offset, y_offset = coords.get(boxes, scores)
+    distanceToTarget = realsenseUtils.readDepthAtPointInRGB(x_offset, y_offset)
 
     # Calculate angle offsets for tracking, and to validate targets
     x_offset_ang, y_offset_ang = cameraOffsetToAngle.FromPixels(x_offset, y_offset)
@@ -120,10 +121,12 @@ def RunAI(image_np):
 
     # send camera offset angle to robot - angle=0 if no valid targets
     commClient.SendValueArray("PC Offset in AI Cam: ", Offsets)
-    print("({}, {})".format(x_offset, y_offset))
-    print("Angle Offset (X) in Cam: {}".format(x_offset_ang))
-
+    commClient.SendValuePair("Distance To Target:", distanceToTarget)
     commClient.SendValuePair("target area", coords.targetBoxArea)
+
+    print("({}, {})".format(x_offset, y_offset))
+    print("Distance To Target: {}".format(distanceToTarget))
+    print("Angle Offset (X) in Cam: {}".format(x_offset_ang))
 
 with detectionGraph.as_default():
     with tf.Session(graph=detectionGraph) as sess:
