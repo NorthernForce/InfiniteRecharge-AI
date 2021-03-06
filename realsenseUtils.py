@@ -12,21 +12,21 @@ DEPTH_CAP_FPS = 90
 
 pipeline = rs.pipeline()
 config = rs.config()
-config.enable_stream(rs.stream.depth, DEPTH_CAP_WIDTH, DEPTH_CAP_HEIGHT, rs.format.z16, DEP)
+config.enable_stream(rs.stream.depth, DEPTH_CAP_WIDTH, DEPTH_CAP_HEIGHT, rs.format.z16, DEPTH_CAP_FPS)
 config.enable_stream(rs.stream.color, RGB_CAP_WIDTH, RGB_CAP_HEIGHT, rs.format.bgr8, RGB_CAP_FPS)
 profile = pipeline.start(config)
 
 inchesPerMeter = 39.37
 
 def readRGBImage():
-    frames = pipeline.wait_for_frames()
-	colorFrame = frames.get_colorFrame()
+	frames = pipeline.wait_for_frames()
+	colorFrame = frames.get_color_frame()
 	return np.asanyarray(colorFrame.get_data())
 
 def readDepthAtPointInRGB(x, y):
-    x_scaled = int((x / RGB_CAP_WIDTH) * DEPTH_CAP_WIDTH)
+	x_scaled = int((x / RGB_CAP_WIDTH) * DEPTH_CAP_WIDTH)
 	y_scaled = int((y / RGB_CAP_HEIGHT) * DEPTH_CAP_HEIGHT)
 
 	frames = pipeline.wait_for_frames()
-	depthFrame = frames.get_depthFrame()
+	depthFrame = frames.get_depth_frame()
 	return (depthFrame.get_distance(x_scaled, y_scaled) * inchesPerMeter)
